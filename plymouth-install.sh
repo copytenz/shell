@@ -38,7 +38,8 @@
 [ -z $1 ] && themeName="NOT-SET" || themeName=$1
 
 echo "The name of theme is $themeName"
-read -p "just a stop on my way" anykey
+echo ""
+read -p "Just a stop on my way.." anykey
 while true; do
 	read -p "Enter theme name. Please ensure that folder with such name exists in the current directory: " themeName
 	[ -d "./$themeName" ] &&  break || echo "Folder ./$themeName doesn't exist"	

@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# 
 ################################################################################
 # SCRIPT: 	tz_archive_dropbox.sh
 #
@@ -20,7 +19,8 @@ photosDir=/mnt/granary/private/photos/CameraUploads
 
 cd "$workDir"
 
-for folder in "$screenShotsDir" "$photosDir"; do mkdir -p $folder; done
+#for folder in "$screenShotsDir" "$photosDir"; do mkdir -p $folder; done
+for folder in "$screenShotsDir" "$photosDir"; do mkdir  $folder; done
 
 function mv_files_to_targetFolder {
 	export  fileMask targetDir
@@ -35,13 +35,15 @@ function mv_files_to_targetFolder {
 	subDir=${subDir:0:7} 
 	targetDir=$targetDir/$subDir
 	echo "`date +%Y-%m-%d" "%H:%M:%S` * Archiving to folder $targetDir"
-	mkdir -p "$targetDir"
+#	mkdir -p "$targetDir"
+	mkdir  "$targetDir"
 	# echo "${subDir}${fileMask}" "$targetDir/" 
 	mv ${subDir}${fileMask} "$targetDir/"
 	return 0
 }
 
-[ -f *.png ] && mv *.png "$screenShotsDir/" || echo "* No PNG files in the folder"
+#[ -f "*.png" ] && mv *.png "$screenShotsDir/" || echo "* No PNG files in the folder"
+[ -n "$(ls *.png)" ] && mv *.png "$screenShotsDir/" || echo "* No PNG files in the folder"
 
 i=0
 while true; do

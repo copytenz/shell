@@ -1,7 +1,11 @@
 #!/bin/bash
 
 export siteName="$1"
-if [ -z "$siteName" ] then exit
+
+if [ -z "$siteName" ]; then
+	echo "siteName is not set - exiting.."	
+	exit; 
+fi
 
 if [ ! $(whoami) == "root" ]; then 
 	sudo $0; 

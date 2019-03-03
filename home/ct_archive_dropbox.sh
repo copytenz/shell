@@ -7,10 +7,10 @@
 #
 # USAGE: 	
 #
-# VERSION: 	0.1 
-# VERSION DATE:	2017-12-08
+# VERSION: 	0.2 
+# VERSION DATE:	2019-01-18
 # CHANGE BY:	4e
-# CHANGES:	* New script
+# CHANGES:	* changed approach for moving files from mv *.png to for i in *.png
 ################################################################################
 
 workDir="/mnt/storage/Dropbox/Camera Uploads"
@@ -43,7 +43,15 @@ function mv_files_to_targetFolder {
 }
 
 #[ -f "*.png" ] && mv *.png "$screenShotsDir/" || echo "* No PNG files in the folder"
-[ -n "$(ls *.png)" ] && mv *.png "$screenShotsDir/" || echo "* No PNG files in the folder"
+#[ -n "$(ls *.png)" ] && mv *.png "$screenShotsDir/" || echo "* No PNG files in the folder"
+if [ -n "$(ls *.png)" ]; do 
+	for i in *.png; do
+		mv $i "$screenShotsDir/";
+	done
+else 
+	echo "* No PNG files in the folder"
+done
+
 
 i=0
 while true; do

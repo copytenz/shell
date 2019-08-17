@@ -1,0 +1,81 @@
+#!/usr/bin/bash
+
+#***********************************
+# SCRIPT:       log_watch
+# DESCRIPTION:  see HELP TEXT below
+# EXAMPLE:      log_watch -i "error|ora"  logs/messages.log
+#
+# VERSION: 1.0 by copytenz
+# DATE: 2019-08-16
+#**********************************
+
+# HELP TEXT
+helpText="
+USAGE: log_watch [-i INCLUDEFILTER] [-e EXCLUDEFILTER] [-h] FILE
+  Log watch script - watches defined text file
+  Outputs to console removing non-required spaces at the beginnings of line
+   -i INCLUDEFILTER             Sets filter for strings  to INCLUDE in the output
+                                Filters can be combined using pipe (\"|\") as dvidier
+   -e EXCLUDEFILTER             Set filter for strings to  EXCLUDE from the output
+                                Filters can be combined using pipe (\"|\") as dvidier
+   -h                           Tries to do the format more human readable
+                                Removes non-required text of Spring log files at the begnning etc
+
+"
+
+# DEFINE VARIABLES
+cmd="tail -F"                   # basic comand
+cmdFileName="$fileName"         # default filename if -i is not set or doesn't point to a file
+currentYear=$(date +%Y)         # define current year to search start of valuable data in log string
+cmdModifier=""                  # removes most of the log string before and if it finds 2019 in string
+cmdExclude=""                   # placeholders for egrep filters for rows exclusion
+cmdFilters=""                   # placeholders for egrep filters for rows inclusion in the output
+
+# DEFINE FUNCTIONS
+function checkArgs  {
+if [[ $OPTARG =~ ^-[ieh\?]$ ]]; then
+  echo "Unknow argument $OPTARG for option -$opt!"
+  exit 1
+fi
+}
+
+
+# GET ARGUMENTS
+while getopts ":?:e:i:h*" opt; do
+  case $opt in
+   \?)
+        echo "$helpText"
+        exit 42;
+        ;;
+   e)   checkArgs
+        [ ! -z "$OPTARG" ] && cmdExclude="| egrep  -i -v  \"$OPTARG\""          # case-insensitive, EXCLUDE extended regexp format for multiple values
+        shift $((OPTIND - 1))
+        ;;
+   i)   checkArgs
+        [ ! -z "$OPTARG" ] && cmdFilters="| egrep -i --color -e \"$OPTARG\""    # case-insensitive, INCLUDE extended regexp format for multiple values
+        shift $((OPTIND - 1))
+        ;;
+   h)
+        cmdModifier="| sed "s/^.*$currentYear/$currentYear/i""                  # removes most of the log string before and if it finds 2019 in string
+        shift $((OPTIND - 1))
+        ;;
+   *)
+        echo "Unknown option: -$opt"
+        ;;
+  esac
+done
+
+if [ -r "$1" ]; then
+  cmdFileName=$1
+else
+  [ ! -z "$1" ] &&  echo "File \"$1\" doesn't exist or not readable for you\n"
+  echo "$helpText"
+  exit 1
+fi
+
+
+cmdString="$cmd $cmdFileName $cmdModifier $cmdExclude $cmdFilters"
+echo $cmdString
+
+bash -c "$cmdString"
+

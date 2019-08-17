@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 #***********************************
 # SCRIPT:       log_watch
@@ -33,7 +33,7 @@ cmdFilters=""                   # placeholders for egrep filters for rows inclus
 
 # DEFINE FUNCTIONS
 function checkArgs  {
-if [[ $OPTARG =~ ^-[ieh\?]$ ]]; then
+if [[ $OPTARG =~ ^-[eih\?]$ ]]; then
   echo "Unknow argument $OPTARG for option -$opt!"
   exit 1
 fi
@@ -57,7 +57,6 @@ while getopts ":?:e:i:h*" opt; do
         ;;
    h)
         cmdModifier="| sed "s/^.*$currentYear/$currentYear/i""                  # removes most of the log string before and if it finds 2019 in string
-        shift $((OPTIND - 1))
         ;;
    *)
         echo "Unknown option: -$opt"
